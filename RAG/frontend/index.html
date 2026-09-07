@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Registrar Desk — University Records Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="desk">
+
+  <!-- ============ HEADER ============ -->
+  <header class="desk__header">
+    <div class="seal" aria-hidden="true">
+      <svg viewBox="0 0 48 48" width="30" height="30">
+        <circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <circle cx="24" cy="24" r="16" fill="none" stroke="currentColor" stroke-width="1"/>
+        <text x="24" y="29" text-anchor="middle" font-family="Newsreader, serif" font-size="15" fill="currentColor">RD</text>
+      </svg>
+    </div>
+    <div class="desk__title">
+      <h1>Registrar Desk</h1>
+      <p class="desk__tagline">Ask once. The right desk answers.</p>
+    </div>
+    <div class="desk__status" id="statusPill">
+      <span class="dot"></span>
+      <span id="statusText">checking index…</span>
+    </div>
+  </header>
+
+  <div class="desk__body">
+
+    <!-- ============ SIDEBAR: DIRECTORY ============ -->
+    <aside class="directory">
+      <p class="directory__label">Directory</p>
+
+      <button class="directory__row directory__row--auto is-active" data-agent="auto">
+        <span class="mark mark--auto">S</span>
+        <span class="row-text">
+          <span class="row-title">Supervisor (auto‑route)</span>
+          <span class="row-desc">Reads your question, sends it to the right desk</span>
+        </span>
+      </button>
+
+      <div class="directory__divider"></div>
+
+      <div id="agentList"><!-- populated by script.js --></div>
+
+      <div class="directory__footer">
+        <p class="directory__note">Direct desks skip routing and answer from their own records only.</p>
+      </div>
+    </aside>
+
+    <!-- ============ MAIN: THREAD ============ -->
+    <main class="thread-pane">
+
+      <div class="thread-pane__meta">
+        <span>Routed via: <strong id="routedVia">Supervisor</strong></span>
+        <button id="clearThread" class="link-btn">Clear thread</button>
+      </div>
+
+      <div class="thread" id="thread">
+        <div class="empty-state" id="emptyState">
+          <p class="empty-state__title">No correspondence yet</p>
+          <p class="empty-state__body">
+            Ask about a student's admission, results, attendance, fees, faculty
+            record, or risk outlook — the Supervisor will route it, or pick a
+            desk from the directory to ask directly.
+          </p>
+        </div>
+      </div>
+
+      <form class="composer" id="composerForm">
+        <textarea
+          id="composerInput"
+          rows="1"
+          placeholder="What is the CGPA of Zain Hassan?"
+          aria-label="Message"
+        ></textarea>
+        <button type="submit" id="sendBtn" aria-label="Send">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </form>
+    </main>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

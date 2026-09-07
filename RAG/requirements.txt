@@ -1,0 +1,20 @@
+# --- Core RAG pipeline (already in use by src/) ---
+langchain>=0.3.0
+langchain-community>=0.3.0
+langchain-text-splitters>=0.3.0
+langchain-google-genai>=2.0.0
+sentence-transformers>=3.0.0
+faiss-cpu>=1.8.0
+numpy>=1.26.0
+pandas>=2.2.0
+python-dotenv>=1.0.0
+
+# --- Document loaders used by src/data_loader.py ---
+pypdf>=4.0.0
+docx2txt>=0.8
+unstructured>=0.15.0
+
+# --- Web backend (new) ---
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+pydantic>=2.7.0
