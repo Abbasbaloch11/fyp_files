@@ -30,6 +30,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from src.utils import extract_text
+from backend.stats import compute_stats
 
 # =========================================================
 # STATIC AGENT METADATA (for the sidebar / directory UI)
@@ -87,25 +88,28 @@ app.add_middleware(
 
 _supervisor_agent = None
 _domain_agents = None
-_load_error: Optional[str] = None
 
 
 def get_agents():
-    """Import and cache the agents on first use."""
-    global _supervisor_agent, _domain_agents, _load_error
+    """
+    Import and cache the agents on first successful use.
 
-    if _supervisor_agent is not None or _load_error is not None:
+    Deliberately does NOT cache failures: if import raises (e.g. a
+    missing GOOGLE_API_KEY or a missing package), we want every
+    subsequent request to retry and surface the real error again,
+    rather than silently remembering "already tried" and returning
+    None forever.
+    """
+    global _supervisor_agent, _domain_agents
+
+    if _supervisor_agent is not None:
         return _supervisor_agent, _domain_agents
 
-    try:
-        from main_agent import supervisor_agent
-        from multi_agents import AGENTS
+    from main_agent import supervisor_agent
+    from multi_agents import AGENTS
 
-        _supervisor_agent = supervisor_agent
-        _domain_agents = AGENTS
-    except Exception as exc:  # noqa: BLE001 - surface any startup error to the API
-        _load_error = str(exc)
-        raise
+    _supervisor_agent = supervisor_agent
+    _domain_agents = AGENTS
 
     return _supervisor_agent, _domain_agents
 
@@ -147,6 +151,14 @@ def list_agents():
             {"key": key, **info} for key, info in AGENT_INFO.items()
         ]
     }
+
+
+@app.get("/api/stats")
+def stats():
+    try:
+        return compute_stats()
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(status_code=500, detail=f"Could not compute stats: {exc}") from exc
 
 
 @app.post("/api/chat", response_model=ChatResponse)
