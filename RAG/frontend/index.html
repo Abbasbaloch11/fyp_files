@@ -89,9 +89,40 @@
       </form>
     </main>
 
+    <!-- ============ INSIGHTS PANEL ============ -->
+    <aside class="insights" id="insights">
+      <p class="insights__label">Institution Insights</p>
+      <p class="insights__sub">Live from the current dataset</p>
+
+      <div class="stat-row" id="statRow">
+        <!-- populated by script.js -->
+      </div>
+
+      <div class="card" id="cardEnrollment">
+        <p class="card__title">Enrollment by Program</p>
+        <div class="card__body" id="chartEnrollment"></div>
+      </div>
+
+      <div class="card" id="cardCgpa">
+        <p class="card__title">CGPA Trend <span class="card__hint">avg. across cohort, by semester</span></p>
+        <div class="card__body" id="chartCgpa"></div>
+      </div>
+
+      <div class="card" id="cardAttendance">
+        <p class="card__title">Attendance</p>
+        <div class="card__body card__body--gauges" id="chartAttendance"></div>
+      </div>
+
+      <div class="card" id="cardRisk">
+        <p class="card__title">Analytics — Risk Outlook</p>
+        <div class="card__body card__body--donut" id="chartRisk"></div>
+      </div>
+    </aside>
+
   </div>
 </div>
 
 <script src="script.js"></script>
 </body>
 </html>
+
