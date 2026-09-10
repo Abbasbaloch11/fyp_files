@@ -1,128 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Registrar Desk — University Records Assistant</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Multi-Agent Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+    <div class="dashboard">
+        <!-- Left Sidebar: Agent Desks -->
+        <aside class="sidebar">
+            <div class="brand">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <h2>University</h2>
+            </div>
+            <div class="menu-label">Interactive Specialist Agent Desks</div>
+            <ul class="agent-list" id="agent-list">
+                <li class="active" data-agent="supervisor">
+                    <i class="fa-solid fa-sitemap"></i>
+                    <div class="agent-info">
+                        <span class="agent-name">Supervisor / General</span>
+                        <span class="agent-desc">Routes to the right desk</span>
+                    </div>
+                </li>
+                <li data-agent="admission">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <div class="agent-info">
+                        <span class="agent-name">Admission Agent</span>
+                        <span class="agent-desc">Eligibility & enrollment</span>
+                    </div>
+                </li>
+                <li data-agent="examination">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <div class="agent-info">
+                        <span class="agent-name">Examination Agent</span>
+                        <span class="agent-desc">Results, GPA & transcripts</span>
+                    </div>
+                </li>
+                <li data-agent="attendance">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <div class="agent-info">
+                        <span class="agent-name">Attendance Agent</span>
+                        <span class="agent-desc">Records & shortages</span>
+                    </div>
+                </li>
+                <li data-agent="finance">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                    <div class="agent-info">
+                        <span class="agent-name">Finance Agent</span>
+                        <span class="agent-desc">Fees, challans & dues</span>
+                    </div>
+                </li>
+                <li data-agent="admin">
+                    <i class="fa-solid fa-users-gear"></i>
+                    <div class="agent-info">
+                        <span class="agent-name">Admin Agent</span>
+                        <span class="agent-desc">Faculty & staff records</span>
+                    </div>
+                </li>
+                <li data-agent="analytics">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <div class="agent-info">
+                        <span class="agent-name">Analytics Agent</span>
+                        <span class="agent-desc">Performance & risk</span>
+                    </div>
+                </li>
+            </ul>
+        </aside>
 
-<div class="desk">
+        <!-- Center: Chat Area -->
+        <main class="chat-container">
+            <header class="chat-header">
+                <h3>AI Multi-Agent Dashboard</h3>
+                <span class="routing-status" id="routing-status">Routed via: Supervisor</span>
+            </header>
+            
+            <div class="chat-history" id="chat-history">
+                <div class="message system-msg">
+                    <p>Ask about a student's admission, results, attendance, or fees. The Supervisor will route it, or pick a desk directly from the sidebar.</p>
+                </div>
+            </div>
 
-  <!-- ============ HEADER ============ -->
-  <header class="desk__header">
-    <div class="seal" aria-hidden="true">
-      <svg viewBox="0 0 48 48" width="30" height="30">
-        <circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="1.4"/>
-        <circle cx="24" cy="24" r="16" fill="none" stroke="currentColor" stroke-width="1"/>
-        <text x="24" y="29" text-anchor="middle" font-family="Newsreader, serif" font-size="15" fill="currentColor">RD</text>
-      </svg>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Type a message..." autocomplete="off">
+                <button id="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </main>
+
+        <!-- Right: Analytics & Graphs Panel -->
+        <aside class="analytics-panel">
+            <div class="chart-card">
+                <h4>Student Statistics</h4>
+                <canvas id="barChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h4>CGPA Trend</h4>
+                <canvas id="lineChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h4>Attendance Metrics</h4>
+                <canvas id="doughnutChart"></canvas>
+            </div>
+        </aside>
     </div>
-    <div class="desk__title">
-      <h1>Registrar Desk</h1>
-      <p class="desk__tagline">Ask once. The right desk answers.</p>
-    </div>
-    <div class="desk__status" id="statusPill">
-      <span class="dot"></span>
-      <span id="statusText">checking index…</span>
-    </div>
-  </header>
-
-  <div class="desk__body">
-
-    <!-- ============ SIDEBAR: DIRECTORY ============ -->
-    <aside class="directory">
-      <p class="directory__label">Directory</p>
-
-      <button class="directory__row directory__row--auto is-active" data-agent="auto">
-        <span class="mark mark--auto">S</span>
-        <span class="row-text">
-          <span class="row-title">Supervisor (auto‑route)</span>
-          <span class="row-desc">Reads your question, sends it to the right desk</span>
-        </span>
-      </button>
-
-      <div class="directory__divider"></div>
-
-      <div id="agentList"><!-- populated by script.js --></div>
-
-      <div class="directory__footer">
-        <p class="directory__note">Direct desks skip routing and answer from their own records only.</p>
-      </div>
-    </aside>
-
-    <!-- ============ MAIN: THREAD ============ -->
-    <main class="thread-pane">
-
-      <div class="thread-pane__meta">
-        <span>Routed via: <strong id="routedVia">Supervisor</strong></span>
-        <button id="clearThread" class="link-btn">Clear thread</button>
-      </div>
-
-      <div class="thread" id="thread">
-        <div class="empty-state" id="emptyState">
-          <p class="empty-state__title">No correspondence yet</p>
-          <p class="empty-state__body">
-            Ask about a student's admission, results, attendance, fees, faculty
-            record, or risk outlook — the Supervisor will route it, or pick a
-            desk from the directory to ask directly.
-          </p>
-        </div>
-      </div>
-
-      <form class="composer" id="composerForm">
-        <textarea
-          id="composerInput"
-          rows="1"
-          placeholder="What is the CGPA of Zain Hassan?"
-          aria-label="Message"
-        ></textarea>
-        <button type="submit" id="sendBtn" aria-label="Send">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-      </form>
-    </main>
-
-    <!-- ============ INSIGHTS PANEL ============ -->
-    <aside class="insights" id="insights">
-      <p class="insights__label">Institution Insights</p>
-      <p class="insights__sub">Live from the current dataset</p>
-
-      <div class="stat-row" id="statRow">
-        <!-- populated by script.js -->
-      </div>
-
-      <div class="card" id="cardEnrollment">
-        <p class="card__title">Enrollment by Program</p>
-        <div class="card__body" id="chartEnrollment"></div>
-      </div>
-
-      <div class="card" id="cardCgpa">
-        <p class="card__title">CGPA Trend <span class="card__hint">avg. across cohort, by semester</span></p>
-        <div class="card__body" id="chartCgpa"></div>
-      </div>
-
-      <div class="card" id="cardAttendance">
-        <p class="card__title">Attendance</p>
-        <div class="card__body card__body--gauges" id="chartAttendance"></div>
-      </div>
-
-      <div class="card" id="cardRisk">
-        <p class="card__title">Analytics — Risk Outlook</p>
-        <div class="card__body card__body--donut" id="chartRisk"></div>
-      </div>
-    </aside>
-
-  </div>
-</div>
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
-
